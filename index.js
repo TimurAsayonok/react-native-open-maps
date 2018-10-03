@@ -1,4 +1,3 @@
-import React from 'react';
 import { Linking, Platform } from 'react-native';
 
 export default function open({latitude, longitude, zoomLevel, query, provider}) {
@@ -18,19 +17,19 @@ export function createOpenLink({latitude, longitude, zoomLevel = 15, query, prov
 	return async () => Linking.openURL(mapLink).catch(err => console.error('An error occurred', err));
 }
 
-export function createMapLink({latitude, longitude, zoomLevel = 15, query, provider = 'google'}) {
-	const link = {
-		'google': `https://www.google.com/maps/search/?api=1&zoom=${zoomLevel}`,
-		'apple': `http://maps.apple.com/?ll=${latitude},${longitude}&z=${zoomLevel}`,
-	};
+export function createMapLink({ latitude, longitude, zoomLevel = 15, query, provider = 'google' }) {
+  const link = {
+    'google': `http://maps.google.com/maps?ll=${latitude},${longitude}&z=${zoomLevel}`,
+    'apple': `http://maps.apple.com/?z=${zoomLevel}`,
+  };
 
-	if (query) {
-		const queryParam = `q=${query}`;
-		link.google = link.google.concat('&', queryParam);
-		link.apple = link.apple.concat('&', queryParam);
-	} else {
-		link.google = link.google.concat('&', `q=${latitude},${longitude}`)
-	}
+  if (query) {
+    const queryParam = `q=${query}`;
+    link.google = link.google.concat('&', queryParam);
+    link.apple = link.apple.concat('&', queryParam);
+  } else {
+    link.apple = link.apple.concat('&', `ll = ${latitude}, ${longitude}`);
+  }
 
-	return encodeURI(link[provider]);
+  return encodeURI(link[provider]);
 }
